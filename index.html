@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juego de Seguridad Ciudadana</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #e0e0e0;
+      }
+      #gameCanvas {
+        display: block;
+        margin: 60px auto;
+        background-image: url("bg.jpg"); /* Reemplaza con la ruta a tu imagen */
+        background-size: cover;
+        background-position: center;
+        border: 2px solid #000;
+        position: relative;
+      }
+      .center {
+        text-align: center;
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      .speech-bubble {
+        position: absolute;
+        top: 50%;
+        left: 65%;
+        transform: translateX(-50%);
+        width: 350px;
+        padding: 10px;
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 10px;
+        text-align: center;
+      }
+      .option {
+        position: absolute;
+        bottom: 50px;
+        width: 250px;
+        padding: 10px;
+        background-color: white;
+        border: 2px solid black;
+        text-align: center;
+        cursor: pointer;
+      }
+      #optionLeft {
+        left: 100px;
+      }
+      #optionRight {
+        right: 100px;
+      }
+
+      #questionTitle {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        width: 80%;
+      }
+
+      #gameOver {
+        display: none;
+        text-align: center;
+      }
+      #gameOver img {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameCanvas" width="1000" height="600">
+      <div id="questionTitle"></div>
+      <div class="speech-bubble">
+        Tengo que encontrar el camino al comando policial, ayúdame a seleccionar
+        la ruta correcta.
+      </div>
+      <canvas id="characterCanvas" width="1000" height="600"></canvas>
+      <div id="optionLeft" class="option" onclick="checkDecision(0)"></div>
+      <div id="optionRight" class="option" onclick="checkDecision(1)"></div>
+    </div>
+
+    <div id="menu" class="center">
+      <h1>Juego de Seguridad Ciudadana</h1>
+      <button onclick="startGame()">Iniciar Juego</button>
+      <button onclick="showInstructions()">Instrucciones</button>
+    </div>
+
+    <div id="instructions" class="center" style="display: none">
+      <h2>Instrucciones</h2>
+      <p>
+        Guía al personaje hasta su destino escogiendo el camino correcto basado
+        en las señales de seguridad ciudadana, puede hacer click en la opción
+        correcta o navegar con las flechas derecha e izquierda.
+      </p>
+      <button onclick="showMenu()">Volver</button>
+    </div>
+
+    <div id="gameOver" class="center">
+      <img id="finalImage" src="" alt="Comando Policial" />
+      <h2 id="gameOverText"></h2>
+      <button onclick="restartGame()">Reiniciar Juego</button>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("characterCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Carga del sprite del personaje
+      const playerImage = new Image();
+      playerImage.src = "pj.png"; // Reemplaza con la ruta a tu sprite
+      const policeStationImageSrc = "bgWin.jpg"; // Reemplaza con la ruta a tu imagen del comando policial
+
+      let player = { x: 620, y: 360, width: 320, height: 320, lives: 2 };
+
+      let crossroads = [
+        {
+          question: "¿Cuál es el objetivo principal de la seguridad ciudadana?",
+          options: [
+            "A) Mantener el orden público a cualquier costo.",
+            "B) Garantizar el ejercicio de los derechos y libertades de todas las personas.",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "¿La seguridad ciudadana es responsabilidad exclusiva del Estado?",
+          options: [
+            "A) Sí, el Estado es el único responsable.",
+            "B) No, el Estado es el principal responsable, pero la ciudadanía y otras organizaciones también participan.",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "¿Qué tipo de prevención busca reducir la motivación para cometer delitos?",
+          options: ["A) Prevención situacional.", "B) Prevención social."],
+          correct: 0,
+        },
+        {
+          question:
+            "¿En qué nivel de intervención se enfoca en individuos que ya han tenido conflictos con la ley para prevenir la reincidencia?",
+          options: ["A) Intervención primaria", "B) Intervención terciaria"],
+          correct: 1,
+        },
+      ];
+
+      let currentCrossroad = 0;
+
+      function startGame() {
+        document.getElementById("menu").style.display = "none";
+        document.getElementById("gameCanvas").style.display = "block";
+        document.getElementById("gameOver").style.display = "none";
+        player.lives = 2;
+        currentCrossroad = 0;
+        displayOptions();
+        drawPlayer();
+      }
+
+      function showInstructions() {
+        document.getElementById("menu").style.display = "none";
+        document.getElementById("instructions").style.display = "block";
+      }
+
+      function showMenu() {
+        document.getElementById("instructions").style.display = "none";
+        document.getElementById("menu").style.display = "block";
+      }
+
+      function gameOver(win) {
+        document.getElementById("gameCanvas").style.display = "none";
+        document.getElementById("gameOver").style.display = "block";
+        const finalImage = document.getElementById("finalImage");
+        if (win) {
+          finalImage.src = policeStationImageSrc;
+          document.getElementById("gameOverText").innerText =
+            "¡Felicitaciones, has completado el juego!";
+        } else {
+          finalImage.src = "bgLose.jpg"; // No muestra imagen en caso de pérdida
+          document.getElementById("gameOverText").innerText =
+            "Perdiste. Intenta de nuevo.";
+        }
+      }
+
+      function restartGame() {
+        document.getElementById("gameOver").style.display = "none";
+        startGame();
+      }
+
+      function drawPlayer() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+          playerImage,
+          player.x,
+          player.y,
+          player.width,
+          player.height
+        );
+      }
+
+      function displayOptions() {
+        if (currentCrossroad < crossroads.length) {
+          const cr = crossroads[currentCrossroad];
+          document.getElementById("questionTitle").innerText = cr.question;
+          document.getElementById("optionLeft").innerText = cr.options[0];
+          document.getElementById("optionRight").innerText = cr.options[1];
+        }
+      }
+
+      function checkDecision(option) {
+        if (option === crossroads[currentCrossroad].correct) {
+          currentCrossroad++;
+          if (currentCrossroad >= crossroads.length) {
+            gameOver(true);
+          } else {
+            displayOptions();
+          }
+        } else {
+          player.lives--;
+          if (player.lives <= 0) {
+            gameOver(false);
+          } else {
+            alert("Te equivocaste. Te quedan " + player.lives + " vidas.");
+          }
+        }
+        drawPlayer();
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") checkDecision(0);
+        if (e.key === "ArrowRight") checkDecision(1);
+      });
+
+      playerImage.onload = function () {
+        startGame();
+      };
+    </script>
+  </body>
+</html>
