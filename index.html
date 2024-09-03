@@ -88,8 +88,8 @@
     <div id="gameCanvas" width="1000" height="600">
       <div id="questionTitle"></div>
       <div class="speech-bubble">
-        Tengo que encontrar el camino al comando policial, ayúdame a seleccionar
-        la ruta correcta.
+        Él es David y ha quedado en reunirse con sus amigos ¿Podrías ayudarlo a
+        encontrar el camino seguro usando las señales visuales?
       </div>
       <canvas id="characterCanvas" width="1000" height="600"></canvas>
       <div id="optionLeft" class="option" onclick="checkDecision(0)"></div>
@@ -127,7 +127,7 @@
       playerImage.src = "pj.png"; // Reemplaza con la ruta a tu sprite
       const policeStationImageSrc = "bgWin.jpg"; // Reemplaza con la ruta a tu imagen del comando policial
 
-      let player = { x: 620, y: 360, width: 320, height: 320, lives: 2 };
+      let player = { x: 660, y: 360, width: 250, height: 250, lives: 2 };
 
       let crossroads = [
         {
