@@ -10,8 +10,44 @@
         font-family: Arial, sans-serif;
         background-color: #e0e0e0;
       }
+      #intro {
+        background-image: url("bg.jpg"); /* Reemplaza con la ruta a tu imagen de fondo */
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: #fff;
+      }
+
+      /* Estilos para la escena de presentación de David */
+      #davidIntro {
+        background-image: url("bg.jpg"); /* Reemplaza con la ruta a tu imagen de fondo */
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: #fff;
+      }
+
+      .container {
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.7
+        ); /* Agrega un fondo blanco con opacidad para leer correctamente el texto */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Agrega un efecto de sombra para dar profundidad */
+        filter: blur(0); /* Quita el blur para que el texto sea legible */
+      }
+
       #gameCanvas {
-        display: block;
+        display: none;
         margin: 60px auto;
         background-image: url("bg.jpg"); /* Reemplaza con la ruta a tu imagen */
         background-size: cover;
@@ -85,36 +121,44 @@
     </style>
   </head>
   <body>
+    <div id="intro">
+      <h1>El Camino Seguro</h1>
+      <p>Presentado por KDT. Montesdeoca</p>
+      <button onclick="startDavidIntro()">Comenzar</button>
+    </div>
+
+    <!-- Escena de presentación de David -->
+    <div id="davidIntro" style="display: none">
+      <div class="container">
+        <img
+          id="davidImage"
+          src="pj.png"
+          alt="Imagen de David"
+          style="max-width: 50%; margin: 20px auto; display: block"
+        />
+        <!-- Reemplaza con la ruta a tu imagen de David -->
+        <p style="text-align: center; color: #333">
+          Él es David y ha quedado en reunirse con sus amigos
+        </p>
+        <p style="text-align: center; color: #333">
+          ¿Podrías ayudarlo a encontrar el camino seguro tomando las mejores decisiones?
+        </p>
+        <button onclick="startGame()" style="display: block; margin: 20px auto">
+          Siguiente
+        </button>
+      </div>
+    </div>
     <div id="gameCanvas" width="1000" height="600">
       <div id="questionTitle"></div>
-      <div class="speech-bubble">
-        Él es David y ha quedado en reunirse con sus amigos ¿Podrías ayudarlo a
-        encontrar el camino seguro usando las señales visuales?
-      </div>
       <canvas id="characterCanvas" width="1000" height="600"></canvas>
       <div id="optionLeft" class="option" onclick="checkDecision(0)"></div>
       <div id="optionRight" class="option" onclick="checkDecision(1)"></div>
     </div>
 
-    <div id="menu" class="center">
-      <h1>Juego de Seguridad Ciudadana</h1>
-      <button onclick="startGame()">Iniciar Juego</button>
-      <button onclick="showInstructions()">Instrucciones</button>
-    </div>
-
-    <div id="instructions" class="center" style="display: none">
-      <h2>Instrucciones</h2>
-      <p>
-        Guía al personaje hasta su destino escogiendo el camino correcto basado
-        en las señales de seguridad ciudadana, puede hacer click en la opción
-        correcta o navegar con las flechas derecha e izquierda.
-      </p>
-      <button onclick="showMenu()">Volver</button>
-    </div>
-
     <div id="gameOver" class="center">
-      <img id="finalImage" src="" alt="Comando Policial" />
+      <img id="finalImage" src="bgWin.jpg" alt="Comando Policial" />
       <h2 id="gameOverText"></h2>
+    
       <button onclick="restartGame()">Reiniciar Juego</button>
     </div>
 
@@ -124,50 +168,75 @@
 
       // Carga del sprite del personaje
       const playerImage = new Image();
-      playerImage.src = "pj.png"; // Reemplaza con la ruta a tu sprite
-      const policeStationImageSrc = "bgWin.jpg"; // Reemplaza con la ruta a tu imagen del comando policial
+      playerImage.src = "pj.png"; // Reemplaza con la ruta a tu sprite const policeStationImageSrc = "bgWin.jpg"; // Reemplaza con la ruta a tu imagen del comando policial
 
-      let player = { x: 660, y: 360, width: 250, height: 250, lives: 2 };
+      let player = { x: 600, y: 600, width: 250, height: 250, lives: 1 };
 
       let crossroads = [
         {
-          question: "¿Cuál es el objetivo principal de la seguridad ciudadana?",
+          question:
+            "Estás caminando por la noche y ves un grupo de personas consumiendo bebidas alcohólicas en la calle. ¿Qué haces?",
           options: [
-            "A) Mantener el orden público a cualquier costo.",
-            "B) Garantizar el ejercicio de los derechos y libertades de todas las personas.",
+            "Te acercas al grupo y tratas de unirte a la fiesta.",
+            "Tomas otro camino para evitar el grupo.",
           ],
           correct: 1,
+          background: "bgBebidas.jpg", // Reemplaza con la ruta a tu imagen de fondo
+          playerX: 400,
+          playerY: 360,
         },
         {
           question:
-            "¿La seguridad ciudadana es responsabilidad exclusiva del Estado?",
+            "¿Qué debes hacer si te sientes perdido en un lugar desconocido?",
           options: [
-            "A) Sí, el Estado es el único responsable.",
-            "B) No, el Estado es el principal responsable, pero la ciudadanía y otras organizaciones también participan.",
+            "Llamas a un amigo o familiar para pedir ayuda.",
+            "Buscas ayuda de un desconocido.",
+            
           ],
-          correct: 1,
-        },
-        {
-          question:
-            "¿Qué tipo de prevención busca reducir la motivación para cometer delitos?",
-          options: ["A) Prevención situacional.", "B) Prevención social."],
           correct: 0,
+          background: "bgDesconocido.jpg", // Reemplaza con la ruta a tu imagen de fondo
+          playerX: 500,
+          playerY: 200,
         },
         {
           question:
-            "¿En qué nivel de intervención se enfoca en individuos que ya han tenido conflictos con la ley para prevenir la reincidencia?",
-          options: ["A) Intervención primaria", "B) Intervención terciaria"],
+            "Estás en un lugar público y ves a alguien que parece estar en problemas. ¿Qué haces?",
+          options: [
+            "Llamas a las autoridades para reportar la situación.",
+            "Te acercas a la persona y tratas de ayudarla.",
+            
+          ],
+          correct: 0,
+          background: "bgPelea.jpg", // Reemplaza con la ruta a tu imagen de fondo
+          playerX: 300,
+          playerY: 400,
+        },
+        {
+          question:
+            "¿Qué debes hacer si te enfrentas a una situación de acoso o bullying en un lugar público?",
+          options: [
+            "Te defiendes físicamente.",
+            "Buscas ayuda de un adulto o autoridad.",
+          ],
           correct: 1,
+          background: "bgBullying.jpg", // Reemplaza con la ruta a tu imagen de fondo
+          playerX: 600,
+          playerY: 100,
         },
       ];
 
       let currentCrossroad = 0;
 
+      function startDavidIntro() {
+        document.getElementById("intro").style.display = "none";
+        document.getElementById("davidIntro").style.display = "block";
+      }
+
       function startGame() {
         document.getElementById("menu").style.display = "none";
         document.getElementById("gameCanvas").style.display = "block";
         document.getElementById("gameOver").style.display = "none";
-        player.lives = 2;
+        player.lives = 1;
         currentCrossroad = 0;
         displayOptions();
         drawPlayer();
@@ -220,6 +289,12 @@
           document.getElementById("questionTitle").innerText = cr.question;
           document.getElementById("optionLeft").innerText = cr.options[0];
           document.getElementById("optionRight").innerText = cr.options[1];
+          document.getElementById(
+            "gameCanvas"
+          ).style.backgroundImage = `url(${cr.background})`;
+          player.x = cr.playerX;
+          player.y = cr.playerY;
+          drawPlayer();
         }
       }
 
@@ -232,24 +307,25 @@
             displayOptions();
           }
         } else {
-          player.lives--;
-          if (player.lives <= 0) {
-            gameOver(false);
-          } else {
-            alert("Te equivocaste. Te quedan " + player.lives + " vidas.");
-          }
+          gameOver(false);
         }
-        drawPlayer();
       }
 
       window.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft") checkDecision(0);
-        if (e.key === "ArrowRight") checkDecision(1);
+        if (e.key === "ArrowLeft") {
+          checkDecision(0);
+        } else if (e.key === "ArrowRight") {
+          checkDecision(1);
+        }
       });
-
-      playerImage.onload = function () {
-        startGame();
-      };
+      function startGame() {
+        document.getElementById("davidIntro").style.display = "none";
+        document.getElementById("gameCanvas").style.display = "block";
+        player.lives = 1;
+        currentCrossroad = 0;
+        displayOptions();
+        drawPlayer();
+      }
     </script>
   </body>
 </html>
