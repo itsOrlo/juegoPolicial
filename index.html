@@ -15,6 +15,7 @@
         background-size: cover;
         height: 100vh;
         display: flex;
+        flex-direction: column; /* Agrega esto para que los elementos se coloquen en una columna */
         justify-content: center;
         align-items: center;
         font-size: 24px;
@@ -44,6 +45,15 @@
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Agrega un efecto de sombra para dar profundidad */
         filter: blur(0); /* Quita el blur para que el texto sea legible */
+      }
+
+      .intro-container {
+        text-align: center; /* Centra los elementos horizontalmente */
+      }
+      
+      .intro-container h1, .intro-container p, .intro-container button {
+        display: block; /* Crea un bloque para cada elemento */
+        margin-bottom: 20px; /* Agrega un margen de 20px entre cada elemento */
       }
 
       #gameCanvas {
@@ -121,7 +131,7 @@
     </style>
   </head>
   <body>
-    <div id="intro">
+    <div id="intro" class="intro-container">
       <h1>El Camino Seguro</h1>
       <p>Presentado por KDT. Montesdeoca</p>
       <button onclick="startDavidIntro()">Comenzar</button>
