@@ -141,7 +141,8 @@
           Él es David y ha quedado en reunirse con sus amigos
         </p>
         <p style="text-align: center; color: #333">
-          ¿Podrías ayudarlo a encontrar el camino seguro tomando las mejores decisiones?
+          ¿Podrías ayudarlo a encontrar el camino seguro tomando las mejores
+          decisiones?
         </p>
         <button onclick="startGame()" style="display: block; margin: 20px auto">
           Siguiente
@@ -158,7 +159,7 @@
     <div id="gameOver" class="center">
       <img id="finalImage" src="bgWin.jpg" alt="Comando Policial" />
       <h2 id="gameOverText"></h2>
-    
+
       <button onclick="restartGame()">Reiniciar Juego</button>
     </div>
 
@@ -191,7 +192,6 @@
           options: [
             "Llamas a un amigo o familiar para pedir ayuda.",
             "Buscas ayuda de un desconocido.",
-            
           ],
           correct: 0,
           background: "bgDesconocido.jpg", // Reemplaza con la ruta a tu imagen de fondo
@@ -204,7 +204,6 @@
           options: [
             "Llamas a las autoridades para reportar la situación.",
             "Te acercas a la persona y tratas de ayudarla.",
-            
           ],
           correct: 0,
           background: "bgPelea.jpg", // Reemplaza con la ruta a tu imagen de fondo
@@ -220,8 +219,8 @@
           ],
           correct: 1,
           background: "bgBullying.jpg", // Reemplaza con la ruta a tu imagen de fondo
-          playerX: 600,
-          playerY: 100,
+          playerX: 750,
+          playerY: 380,
         },
       ];
 
@@ -267,9 +266,13 @@
         }
       }
 
+      let lives = 1; // Inicializa las vidas en 1
       function restartGame() {
+        location.reload();
         document.getElementById("gameOver").style.display = "none";
         startGame();
+        lives = 1; // Resetear las vidas a 1
+        currentCrossroad = 0; // Resetear el progreso del juego
       }
 
       function drawPlayer() {
